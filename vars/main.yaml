@@ -1,6 +1,7 @@
 ---
 #Define all of your hosts here.  The FQDN and IP address are important to
-#right since they will be defined in the certificates kubernetes uses
+#get right since they will be defined in the certificates kubernetes uses
+#for communication
 host_roles:
   - ubuntu-1:
       type: master
@@ -24,7 +25,7 @@ host_roles:
       ipaddress: 192.168.50.75
 
 #Most of these settings are not incredibly important for your first configuration
-#However make sure that the two CIDRs defined below are unique to your network as
+#however make sure that the two CIDRs defined below are unique to your network as
 #the cluster_node_cidr will need to be routed on your L3 gateway.  Also make sure
 #that the cluster_node_cidr is big as each host get's assigned a /24 out of it.
 cluster_info:
