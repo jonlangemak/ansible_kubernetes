@@ -1,0 +1,13 @@
+{
+  "signing": {
+    "default": {
+      "expiry": "{{ pki_info.ca_expire }}"
+    },
+    "profiles": {
+      "{{ pki_info.cert_name }}": {
+        "usages": ["signing", "key encipherment", "server auth", "client auth"],
+        "expiry": "{{ pki_info.ca_expire }}"
+      }
+    }
+  }
+}

@@ -1,0 +1,126 @@
+---
+- name: create base directories
+  become: true
+  file:
+    path: "{{item.path}}"
+    mode: 0755
+    state: directory
+  with_items:
+    - {path: "/etc/etcd"}
+    - {path: "/var/lib/etcd"}
+    - {path: "/var/lib/kubernetes"}
+    - {path: "/var/lib/kubernetes/pod_defs"}
+
+- name: download etcd binary
+  become: true
+  unarchive:
+    src: https://github.com/coreos/etcd/releases/download/v3.0.10/etcd-v3.0.10-linux-amd64.tar.gz
+    dest: /tmp/
+    remote_src: True
+    creates: /tmp/etcd-v3.0.10-linux-amd64/etcd
+
+- name: copy etcd to bin
+  become: true
+  copy:
+    mode: 0755
+    src: /tmp/etcd-v3.0.10-linux-amd64/etcd
+    dest: /usr/bin/etcd
+
+- name: copy etcdctl to bin
+  become: true
+  copy:
+    mode: 0755
+    src: /tmp/etcd-v3.0.10-linux-amd64/etcdctl
+    dest: /usr/bin/etcdctl
+
+- name: download apiserver binary
+  become: true
+  get_url:
+    url: https://storage.googleapis.com/kubernetes-release/release/v1.5.2/bin/linux/amd64/kube-apiserver
+    dest: /usr/bin/kube-apiserver
+    mode: 0755
+
+- name: download controller binary
+  become: true
+  get_url:
+    url: https://storage.googleapis.com/kubernetes-release/release/v1.5.2/bin/linux/amd64/kube-controller-manager
+    dest: /usr/bin/kube-controller-manager
+    mode: 0755
+
+- name: download scheduler binary
+  become: true
+  get_url:
+    url: https://storage.googleapis.com/kubernetes-release/release/v1.5.2/bin/linux/amd64/kube-scheduler
+    dest: /usr/bin/kube-scheduler
+    mode: 0755
+
+- name: download kubectl binary
+  become: true
+  get_url:
+    url: https://storage.googleapis.com/kubernetes-release/release/v1.5.2/bin/linux/amd64/kubectl
+    dest: /usr/bin/kubectl
+    mode: 0755
+
+- name: generate token file
+  become: true
+  template:
+    src: /etc/ansible/roles/kubernetes/files/csv_templatez/token.csv
+    dest: /var/lib/kubernetes/token.csv
+    mode: 0755
+
+- name: generate auth file
+  become: true
+  template:
+    src: /etc/ansible/roles/kubernetes/files/json_templatez/auth_policy.jsonl
+    dest: /var/lib/kubernetes/authorization-policy.jsonl
+    mode: 0755
+
+- name: etcd_service_config
+  become: true
+  template:
+    src: /etc/ansible/roles/kubernetes/files/systemd_templatez/etcd.service
+    dest: /etc/systemd/system/etcd.service
+    mode: 0755
+
+- name: apiserver_service_config
+  become: true
+  template:
+    src: /etc/ansible/roles/kubernetes/files/systemd_templatez/kube-apiserver.service
+    dest: /etc/systemd/system/kube-apiserver.service
+    mode: 0755
+
+- name: controller_manager_service_config
+  become: true
+  template:
+    src: /etc/ansible/roles/kubernetes/files/systemd_templatez/kube-controller-manager.service
+    dest: /etc/systemd/system/kube-controller-manager.service
+    mode: 0755
+
+- name: scheduler_service_config
+  become: true
+  template:
+    src: /etc/ansible/roles/kubernetes/files/systemd_templatez/kube-scheduler.service
+    dest: /etc/systemd/system/kube-scheduler.service
+    mode: 0755
+
+- name: start k8s services
+  become: true
+  systemd:
+    state: started
+    enabled: yes
+    name: "{{item}}"
+  with_items:
+    - etcd
+    - kube-apiserver
+    - kube-controller-manager
+    - kube-scheduler
+
+- name: copy pod definitions
+  become: true
+  template:
+    mode: 0755
+    src: /etc/ansible/roles/kubernetes/files/pod_definitionz/{{ item }}
+    dest: /var/lib/kubernetes/pod_defs/{{ item }}
+  with_items:
+    - kubedns.yaml
+    - kubedns-svc.yaml

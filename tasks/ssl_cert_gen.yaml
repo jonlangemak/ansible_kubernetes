@@ -1,0 +1,68 @@
+---
+- name: create base directories
+  become: true
+  file:
+    path: "{{item.path}}"
+    mode: 0755
+    state: directory
+  with_items:
+    - {path: "{{ pki_info.cert_path }}"}
+
+- name: ca_config
+  become: true
+  template:
+    src: /etc/ansible/roles/kubernetes/files/json_templatez/pki_ca_config.json
+    dest: "{{ pki_info.cert_path }}/pki_ca_config.json"
+    mode: 0755
+
+- name: ca_csr_config
+  become: true
+  template:
+    src: /etc/ansible/roles/kubernetes/files/json_templatez/pki_ca_csr.json
+    dest: "{{ pki_info.cert_path }}/pki_ca_csr.json"
+    mode: 0755
+
+- name: crt_config
+  become: true
+  template:
+    src: /etc/ansible/roles/kubernetes/files/json_templatez/pki_crt_csr.json
+    dest: "{{ pki_info.cert_path }}/pki_crt_csr.json"
+    mode: 0755
+
+- name: download cfssl binary
+  become: true
+  get_url:
+    url: https://pkg.cfssl.org/R1.2/cfssl_linux-amd64
+    dest: /usr/local/bin/cfssl
+    mode: 0755
+
+- name: download cfssl json binary
+  become: true
+  get_url:
+    url: https://pkg.cfssl.org/R1.2/cfssljson_linux-amd64
+    dest: /usr/local/bin/cfssljson
+    mode: 0755
+
+- name: generate ca
+  become: true
+  shell: cfssl gencert -initca pki_ca_csr.json | cfssljson -bare ca
+  args:
+    chdir: "{{ pki_info.cert_path }}"
+    creates: "{{ pki_info.cert_path }}/ca.pem"
+
+- name: generate cert
+  become: true
+  shell: cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=pki_ca_config.json -profile={{ pki_info.cert_name }} pki_crt_csr.json | cfssljson -bare {{ pki_info.cert_name }}
+  args:
+    chdir: "{{ pki_info.cert_path }}"
+    creates: "{{ pki_info.cert_path }}/{{ pki_info.cert_name }}.pem"
+
+- name: set permissions on key file
+  become: true
+  file:
+    path: "{{item}}"
+    owner: user
+  with_items:
+    - "{{ pki_info.cert_path }}/{{ pki_info.cert_name }}-key.pem"
+    - "{{ pki_info.cert_path }}/ca.pem"
+    - "{{ pki_info.cert_path }}/{{ pki_info.cert_name }}.pem"

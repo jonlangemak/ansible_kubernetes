@@ -1,0 +1,16 @@
+{
+  "CN": "{{ pki_info.cert_name }}",
+  "key": {
+    "algo": "rsa",
+    "size": {{ pki_info.key_size }}
+  },
+  "names": [
+    {
+      "C": "{{ pki_info.cert_country }}",
+      "L": "{{ pki_info.cert_city }}",
+      "O": "{{ pki_info.cert_org }}",
+      "OU": "{{ pki_info.cert_ou }}",
+      "ST": "{{ pki_info.cert_province }}"
+    }
+  ]
+}

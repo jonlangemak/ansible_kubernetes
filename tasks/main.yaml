@@ -1,0 +1,15 @@
+---
+- include: ssl_cert_gen.yaml
+  tags: ssl_gen
+  when:
+    "'masters' in group_names"
+
+- include: master_build.yaml
+  tags: master
+  when:
+    "'masters' in group_names"
+
+- include: minion_build.yaml
+  tags: minion
+  when:
+    "'minions' in group_names"

@@ -1,0 +1,11 @@
+{%- for policy in auth_policy -%}
+  {%- for key, value in policy.iteritems() -%}
+    {%- if value.username -%}
+      {"apiVersion": "abac.authorization.kubernetes.io/v1beta1", "kind": "Policy", "spec": {"user": "{{ value.username }}", "namespace": "{{ value.namespace }}", "resource": "{{ value.resource }}","apiGroup": "{{ value.apigroup }}", "nonResourcePath": "{{ value.nonresourcepath }}", "readonloy": "{{ value.readonly }}"}}{{"\n"}}
+    {%- elif value.group -%}
+      {"apiVersion": "abac.authorization.kubernetes.io/v1beta1", "kind": "Policy", "spec": {"group": "{{ value.group }}", "namespace": "{{ value.namespace }}", "resource": "{{ value.resource }}","apiGroup": "{{ value.apigroup }}", "nonResourcePath": "{{ value.nonresourcepath }}", "readonloy": "{{ value.readonly }}"}}{{"\n"}}
+    {%- endif -%}
+  {%- endfor -%}
+{%- endfor -%}
+
+

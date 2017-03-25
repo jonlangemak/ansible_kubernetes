@@ -1,0 +1,24 @@
+{%- set hosts = [cluster_info.service_network_cidr|ipaddr(1)|ipaddr('address'),"127.0.0.1"] -%}
+{%- for node in host_roles -%} 
+  {%- for key, value in node.iteritems() -%} 
+    {{- hosts.append(value['ipaddress']) -}}
+    {{- hosts.append(value['fqdn']) -}}
+  {%- endfor -%}
+{%- endfor -%}
+{
+  "CN": "{{ pki_info.cert_name }}",
+  "hosts": {{ hosts | to_json }},
+  "key": {
+    "algo": "rsa",
+    "size": {{ pki_info.key_size }}
+  },
+  "names": [
+    {
+      "C": "{{ pki_info.cert_country }}",
+      "L": "{{ pki_info.cert_city }}",
+      "O": "{{ pki_info.cert_org }}",
+      "OU": "{{ pki_info.cert_ou }}",
+      "ST": "{{ pki_info.cert_province }}"
+    }
+  ]
+}

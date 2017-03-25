@@ -1,0 +1,5 @@
+{%- for token in auth_tokens -%} 
+  {%- for key, value in token.iteritems() -%}
+    {{ value.password }},{{ value.username }},{{ value.uid }}{{"\n"}}
+  {%- endfor -%}
+{%- endfor -%}

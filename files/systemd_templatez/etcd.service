@@ -1,0 +1,25 @@
+[Unit]
+Description=etcd
+Documentation=https://github.com/coreos
+
+[Service]
+ExecStart=/usr/bin/etcd --name etcdclusterz \
+  --cert-file={{ pki_info.cert_path }}/{{ pki_info.cert_name }}.pem \
+  --key-file={{ pki_info.cert_path }}/{{ pki_info.cert_name }}-key.pem \
+  --peer-cert-file={{ pki_info.cert_path }}/{{ pki_info.cert_name }}.pem \
+  --peer-key-file={{ pki_info.cert_path }}/{{ pki_info.cert_name }}-key.pem \
+  --trusted-ca-file={{ pki_info.cert_path }}/ca.pem \
+  --peer-trusted-ca-file={{ pki_info.cert_path }}/ca.pem \
+  --initial-advertise-peer-urls https://{{ansible_default_ipv4.address}}:2380 \
+  --listen-peer-urls https://{{ansible_default_ipv4.address}}:2380 \
+  --listen-client-urls https://{{ansible_default_ipv4.address}}:2379,http://127.0.0.1:2379 \
+  --advertise-client-urls https://{{ansible_default_ipv4.address}}:2379 \
+  --initial-cluster-token etcd-cluster-0 \
+  --initial-cluster etcdclusterz=https://{{ansible_default_ipv4.address}}:2380 \
+  --initial-cluster-state new \
+  --data-dir=/var/lib/etcd
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

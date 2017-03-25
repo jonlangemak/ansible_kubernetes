@@ -1,0 +1,30 @@
+[Unit]
+Description=Kubernetes API Server
+Documentation=https://github.com/GoogleCloudPlatform/kubernetes
+
+[Service]
+ExecStart=/usr/bin/kube-apiserver \
+  --admission-control=NamespaceLifecycle,LimitRanger,SecurityContextDeny,ServiceAccount,ResourceQuota \
+  --advertise-address={{ansible_default_ipv4.address}} \
+  --allow-privileged=true \
+  --apiserver-count=3 \
+  --authorization-mode=ABAC \
+  --authorization-policy-file=/var/lib/kubernetes/authorization-policy.jsonl \
+  --bind-address=0.0.0.0 \
+  --enable-swagger-ui=true \
+  --etcd-cafile={{ pki_info.cert_path }}/ca.pem \
+  --insecure-bind-address=0.0.0.0 \
+  --kubelet-certificate-authority={{ pki_info.cert_path }}/ca.pem \
+  --etcd-servers=https://{{ansible_default_ipv4.address}}:2379 \
+  --service-account-key-file={{ pki_info.cert_path }}/{{ pki_info.cert_name }}-key.pem \
+  --service-cluster-ip-range={{ cluster_info.service_network_cidr }} \
+  --service-node-port-range=30000-32767 \
+  --tls-cert-file={{ pki_info.cert_path }}/kubernetes.pem \
+  --tls-private-key-file={{ pki_info.cert_path }}/{{ pki_info.cert_name }}-key.pem \
+  --token-auth-file=/var/lib/kubernetes/token.csv \
+  --v=2
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

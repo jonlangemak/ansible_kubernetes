@@ -1,0 +1,104 @@
+---
+#Define all of your hosts here.  The FQDN and IP address are important to
+#right since they will be defined in the certificates kubernetes uses
+host_roles:
+  - ubuntu-1:
+      type: master
+      fqdn: ubuntu-1.interubernet.local
+      ipaddress: 10.20.30.71
+  - ubuntu-2:
+      type: minion
+      fqdn: ubuntu-2.interubernet.local
+      ipaddress: 10.20.30.72
+  - ubuntu-3:
+      type: minion
+      fqdn: ubuntu-3.interubernet.local
+      ipaddress: 10.20.30.73
+  - ubuntu-4:
+      type: minion
+      fqdn: ubuntu-4.interubernet.local
+      ipaddress: 192.168.50.74
+  - ubuntu-5:
+      type: minion
+      fqdn: ubuntu-5.interubernet.local
+      ipaddress: 192.168.50.75
+
+#Most of these settings are not incredibly important for your first configuration
+#However make sure that the two CIDRs defined below are unique to your network as
+#the cluster_node_cidr will need to be routed on your L3 gateway.  Also make sure
+#that the cluster_node_cidr is big as each host get's assigned a /24 out of it.
+cluster_info:
+  cluster_name: my_cluster
+  cluster_domain: k8s.cluster.local
+  service_network_cidr: 10.11.12.0/24
+  cluster_node_cidr: 10.100.0.0/16
+  dns_service_ip: 10.11.12.254
+
+#Again - not super critical to change this stuff but you can
+pki_info:
+  cert_path: /var/lib/kube_certs
+  key_size: 2048
+  ca_expire: 87600h
+  key_expire: 87600h
+  cert_country: US
+  cert_province: MN
+  cert_city: Minneapolis
+  cert_org: Test Org
+  cert_email: test@test.com
+  cert_ou: Test
+  cert_name: kubernetes
+
+#You can change these if you want but for sure leave the 'kubelet' token.  You can
+#change the password for it if you want but the username needs to be there.
+auth_tokens:
+  - token1:
+      uid: jontoken
+      username: jontoken
+      password: jontoken
+  - token2:
+      uid: kubelet
+      username: kubelet
+      password: changeme
+
+#I recommend leaving this alone until you get a better understanding of Kubernetes
+auth_policy:
+  - policy1:
+      username: "*"
+      group: ""
+      namespace: ""
+      resource: ""
+      apigroup: ""
+      nonresourcepath: "*"
+      readonly: true
+  - policy2:
+      username: admin
+      group: ""
+      namespace: "*"
+      resource: "*"
+      apigroup: "*"
+      nonresourcepath: ""
+      readonly: false
+  - policy3:
+      username: scheduler
+      group: ""
+      namespace: "*"
+      resource: "*"
+      apigroup: "*"
+      nonresourcepath: ""
+      readonly: false
+  - policy4:
+      username: kubelet
+      group: ""
+      namespace: "*"
+      resource: "*"
+      apigroup: "*"
+      nonresourcepath: ""
+      readonly: false
+  - policy5:
+      username: ""
+      group: system:serviceaccounts
+      namespace: "*"
+      resource: "*"
+      apigroup: "*"
+      nonresourcepath: "*"
+      readonly:  false
