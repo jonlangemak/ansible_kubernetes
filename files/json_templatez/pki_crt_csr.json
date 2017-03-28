@@ -3,6 +3,7 @@
   {%- for key, value in node.iteritems() -%} 
     {{- hosts.append(value['ipaddress']) -}}
     {{- hosts.append(value['fqdn']) -}}
+    {{- hosts.append(value['fqdn'].split('.')[0]) -}}
   {%- endfor -%}
 {%- endfor -%}
 {

@@ -97,6 +97,8 @@
     src: /etc/ansible/roles/kubernetes/files/systemd_templatez/kubelet.service
     dest: /etc/systemd/system/kubelet.service
     mode: 0755
+  notify:
+    - restart kubelet
 
 - name: kube-proxy_service_config
   become: true
@@ -104,6 +106,8 @@
     src: /etc/ansible/roles/kubernetes/files/systemd_templatez/kube-proxy.service
     dest: /etc/systemd/system/kube-proxy.service
     mode: 0755
+  notify:
+    - restart kube-proxy
 
 - name: start k8s services
   become: true
