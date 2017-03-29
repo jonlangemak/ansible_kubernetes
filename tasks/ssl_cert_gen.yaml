@@ -61,7 +61,7 @@
   become: true
   file:
     path: "{{item}}"
-    owner: user
+    owner: "{{setup_user}}"
   with_items:
     - "{{ pki_info.cert_path }}/{{ pki_info.cert_name }}-key.pem"
     - "{{ pki_info.cert_path }}/ca.pem"

@@ -1,4 +1,8 @@
 ---
+#Define the user you which to use for provisioning on the hosts. It is 
+#implied that this user will exist on all nodes
+setup_user: user
+
 #Define all of your hosts here.  The FQDN and IP address are important to
 #get right since they will be defined in the certificates kubernetes uses
 #for communication
