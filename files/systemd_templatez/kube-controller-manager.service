@@ -4,8 +4,7 @@ Documentation=https://github.com/GoogleCloudPlatform/kubernetes
 
 [Service]
 ExecStart=/usr/bin/kube-controller-manager \
-  --allocate-node-cidrs=true \
-  --cluster-cidr={{ cluster_info.cluster_node_cidr }} \
+  --allocate-node-cidrs=false \
   --cluster-name={{ cluster_info.cluster_name }} \
   --leader-elect=true \
   --master=http://{{ansible_default_ipv4.address}}:8080 \
