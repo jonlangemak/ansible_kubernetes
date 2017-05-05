@@ -49,6 +49,10 @@
   args:
     chdir: "{{ pki_info.cert_path }}"
     creates: "{{ pki_info.cert_path }}/ca.pem"
+  notify:
+    - restart etcd
+    - restart kube-api-server
+    - restart kube-controller-manager
 
 - name: generate cert
   become: true
@@ -56,6 +60,10 @@
   args:
     chdir: "{{ pki_info.cert_path }}"
     creates: "{{ pki_info.cert_path }}/{{ pki_info.cert_name }}.pem"
+  notify:
+    - restart etcd
+    - restart kube-api-server
+    - restart kube-controller-manager
 
 - name: set permissions on key file
   become: true

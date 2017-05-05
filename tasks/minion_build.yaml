@@ -9,6 +9,7 @@
     - {path: "/var/lib/kubelet"}
     - {path: "/opt/cni"}
     - {path: "/var/lib/kube_certs"}
+    - {path: "/etc/calico"}
 
 - name: copy ca pem
   become: true
@@ -16,6 +17,9 @@
     mode: 0755
     src: /var/lib/kube_certs/ca.pem
     dest: /var/lib/kube_certs/ca.pem
+  notify:
+    - restart kubelet
+    - restart kube-proxy
 
 - name: copy cert
   become: true
@@ -23,6 +27,9 @@
     mode: 0755
     src: /var/lib/kube_certs/kubernetes.pem
     dest: /var/lib/kube_certs/kubernetes.pem
+  notify:
+    - restart kubelet
+    - restart kube-proxy
 
 - name: copy cert key
   become: true
@@ -30,6 +37,9 @@
     mode: 0755
     src: /var/lib/kube_certs/kubernetes-key.pem
     dest: /var/lib/kube_certs/kubernetes-key.pem
+  notify:
+    - restart kubelet
+    - restart kube-proxy
 
 - name: copy kubeconfig
   become: true
@@ -37,6 +47,9 @@
     mode: 0755
     src: /etc/ansible/roles/kubernetes/files/yaml_templatez/kubeconfig
     dest: /var/lib/kubelet/kubeconfig
+  notify:
+    - restart kubelet
+    - restart kube-proxy
 
 - name: download docker binary
   become: true
@@ -119,3 +132,17 @@
     - docker
     - kubelet
     - kube-proxy
+
+- name: download calicoctl binary
+  become: true
+  get_url:
+    url: https://github.com/projectcalico/calicoctl/releases/download/v1.1.3/calicoctl
+    dest: /usr/bin/calicoctl
+    mode: 0755
+
+- name: place calicoctl_cfg
+  become: true
+  template:
+    mode: 0755
+    src: /etc/ansible/roles/kubernetes/files/yaml_templatez/calicoctl_cfg
+    dest: /etc/calico/calicoctl.cfg

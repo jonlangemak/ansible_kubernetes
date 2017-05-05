@@ -12,3 +12,25 @@
     name: kube-proxy
     daemon_reload: yes
     state: restarted
+
+- name: restart kube-api-server
+  become: true
+  systemd:
+    name: kube-apiserver
+    daemon_reload: yes
+    state: restarted
+
+- name: restart etcd
+  become: true
+  systemd:
+    name: etcd
+    daemon_reload: yes
+    state: restarted
+
+- name: restart kube-controller-manager
+  become: true
+  systemd:
+    name: kube-controller-manager
+    daemon_reload: yes
+    state: restarted
+

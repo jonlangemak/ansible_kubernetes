@@ -1,0 +1,16 @@
+{%- set master = [] -%}
+{%- for node in host_roles -%}
+  {%- for key, value in node.iteritems() -%}
+    {%- if "master" in value['type'] -%}
+      {{- master.append(value['ipaddress']) -}}
+    {%- endif -%}
+  {%- endfor -%}
+{%- endfor -%}
+apiVersion: v1
+kind: calicoApiConfig
+metadata:
+spec:
+  etcdEndpoints: https://{{ master | join(",") }}:2379
+  etcdKeyFile: /etc/cni/net.d/calico-tls/etcd-key
+  etcdCertFile: /etc/cni/net.d/calico-tls/etcd-cert
+  etcdCACertFile: /etc/cni/net.d/calico-tls/etcd-ca

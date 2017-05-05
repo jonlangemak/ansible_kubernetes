@@ -1,4 +1,4 @@
-{%- set hosts = [cluster_info.service_network_cidr|ipaddr(1)|ipaddr('address'),"127.0.0.1"] -%}
+{%- set hosts = [cluster_info.service_network_cidr|ipaddr(1)|ipaddr('address'),"127.0.0.1","kubernetes.default"] -%}
 {%- for node in host_roles -%} 
   {%- for key, value in node.iteritems() -%} 
     {{- hosts.append(value['ipaddress']) -}}
