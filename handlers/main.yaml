@@ -34,3 +34,11 @@
     daemon_reload: yes
     state: restarted
 
+- name: restart kube-scheduler
+  become: true
+  systemd:
+    name: kube-scheduler
+    daemon_reload: yes
+    state: restarted
+
+

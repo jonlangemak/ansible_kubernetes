@@ -88,6 +88,8 @@
     src: /etc/ansible/roles/kubernetes/files/systemd_templatez/kube-apiserver.service
     dest: /etc/systemd/system/kube-apiserver.service
     mode: 0755
+  notify:
+    - restart kuke-apiserver
 
 - name: controller_manager_service_config
   become: true
@@ -95,6 +97,8 @@
     src: /etc/ansible/roles/kubernetes/files/systemd_templatez/kube-controller-manager.service
     dest: /etc/systemd/system/kube-controller-manager.service
     mode: 0755
+  notify:
+    - restart kube-controller-manager
 
 - name: scheduler_service_config
   become: true
@@ -102,6 +106,8 @@
     src: /etc/ansible/roles/kubernetes/files/systemd_templatez/kube-scheduler.service
     dest: /etc/systemd/system/kube-scheduler.service
     mode: 0755
+  notify:
+    - restart kube-scheduler
 
 - name: start k8s services
   become: true
