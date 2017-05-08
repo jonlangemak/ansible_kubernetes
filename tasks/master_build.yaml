@@ -89,7 +89,7 @@
     dest: /etc/systemd/system/kube-apiserver.service
     mode: 0755
   notify:
-    - restart kuke-apiserver
+    - restart kuke-api-server
 
 - name: controller_manager_service_config
   become: true
