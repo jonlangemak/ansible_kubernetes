@@ -78,16 +78,18 @@
 - name: download kubelet binary
   become: true
   get_url:
-    url: https://storage.googleapis.com/kubernetes-release/release/v1.5.2/bin/linux/amd64/kubelet
+    url: https://storage.googleapis.com/kubernetes-release/release/v1.7.0/bin/linux/amd64/kubelet
     dest: /usr/bin/kubelet
     mode: 0755
+    force: yes
 
 - name: download kube-proxy binary
   become: true
   get_url:
-    url: https://storage.googleapis.com/kubernetes-release/release/v1.5.2/bin/linux/amd64/kube-proxy
+    url: https://storage.googleapis.com/kubernetes-release/release/v1.7.0/bin/linux/amd64/kube-proxy
     dest: /usr/bin/kube-proxy
     mode: 0755
+    force: yes
 
 - name: download cni files
   become: true
