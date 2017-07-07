@@ -36,30 +36,34 @@
 - name: download apiserver binary
   become: true
   get_url:
-    url: https://storage.googleapis.com/kubernetes-release/release/v1.5.2/bin/linux/amd64/kube-apiserver
+    url: https://storage.googleapis.com/kubernetes-release/release/v1.7.0/bin/linux/amd64/kube-apiserver
     dest: /usr/bin/kube-apiserver
     mode: 0755
+    force: true
 
 - name: download controller binary
   become: true
   get_url:
-    url: https://storage.googleapis.com/kubernetes-release/release/v1.5.2/bin/linux/amd64/kube-controller-manager
+    url: https://storage.googleapis.com/kubernetes-release/release/v1.7.0/bin/linux/amd64/kube-controller-manager
     dest: /usr/bin/kube-controller-manager
     mode: 0755
+    force: true
 
 - name: download scheduler binary
   become: true
   get_url:
-    url: https://storage.googleapis.com/kubernetes-release/release/v1.5.2/bin/linux/amd64/kube-scheduler
+    url: https://storage.googleapis.com/kubernetes-release/release/v1.7.0/bin/linux/amd64/kube-scheduler
     dest: /usr/bin/kube-scheduler
     mode: 0755
+    force: true
 
 - name: download kubectl binary
   become: true
   get_url:
-    url: https://storage.googleapis.com/kubernetes-release/release/v1.5.2/bin/linux/amd64/kubectl
+    url: https://storage.googleapis.com/kubernetes-release/release/v1.7.0/bin/linux/amd64/kubectl
     dest: /usr/bin/kubectl
     mode: 0755
+    force: true
 
 - name: generate token file
   become: true
